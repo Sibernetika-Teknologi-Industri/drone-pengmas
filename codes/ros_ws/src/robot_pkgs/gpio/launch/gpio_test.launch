@@ -1,0 +1,38 @@
+<!-- .launch file for mission functions client -->
+
+<launch>
+
+  <!-- GPIO server arguments -->
+  <arg name="gpio_ns"   default="gpio"/>
+
+  <!-- MAVROS arguments -->
+  <arg name="mavros_ns" default="ezio"/>
+
+  <!-- General parameters -->
+  <rosparam file="$(find mission_control)/config/general_params.yaml"/>
+
+  <!-- Parameters for GPIO -->
+  <param name="gpio_ns" value="$(arg gpio_ns)"/>
+
+  <!-- Parameters for MAVROS -->
+  <param name="mavros_ns" value="$(arg mavros_ns)"/>
+
+  <!-- GPIO node -->
+  <group ns="$(arg gpio_ns)">
+
+    <!-- Load pinout configuration -->
+    <rosparam file="$(find gpio)/config/pinout.yaml"/>
+
+    <!-- Launch geography position server -->
+    <node pkg="gpio" 
+          type="gpio_node"
+          name="gpio_server"
+          respawn="false"
+          output="screen"
+          launch-prefix="gdb -ex run --args">
+      
+    </node>
+
+  </group>
+
+</launch>

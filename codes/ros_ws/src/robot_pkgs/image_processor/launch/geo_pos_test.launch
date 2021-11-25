@@ -1,0 +1,32 @@
+<!-- .launch file for mission functions client -->
+
+<launch>
+
+  <!-- Image processing server arguments -->
+  <arg name="img_proc_ns"   default="image_processing"/>
+
+  <!-- MAVROS arguments -->
+  <arg name="mavros_ns" default="ezio"/>
+
+  <!-- General parameters -->
+  <rosparam file="$(find mission_control)/config/general_params.yaml"/>
+
+  <!-- Parameters for MAVROS -->
+  <param name="mavros_ns" value="$(arg mavros_ns)"/>
+
+  <!-- Image processing nodes -->
+  <group ns="$(arg img_proc_ns)">
+
+    <!-- Launch geography position server -->
+    <node pkg="image_processor" 
+          type="geo_pos_node"
+          name="geo_pos_server"
+          respawn="false"
+          output="screen"
+          launch-prefix="gdb -ex run --args">
+      
+    </node>
+
+  </group>
+
+</launch>

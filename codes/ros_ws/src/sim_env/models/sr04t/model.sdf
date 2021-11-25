@@ -1,0 +1,77 @@
+<?xml version="1.0" ?>
+<sdf version="1.7">
+  <model name="sr04t">
+    <link name="link">
+      <pose>0 0 0 0 0 0</pose>
+      
+      <inertial>
+        <pose>0 0 0 0 0 0</pose>
+        <mass>0.000000000000001</mass>
+        
+        <inertia> <!-- to be calculated -->
+          <ixx>2.08333333e-7</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>2.08333333e-7</iyy>
+          <iyz>0</iyz>
+          <izz>4.16666667e-8</izz>
+        </inertia>
+      </inertial>
+      
+      <visual name="visual">
+        <geometry>
+          <box>
+            <size>0.01 0.01 0.1</size>
+          </box>
+        </geometry>
+        
+        <material>
+          <script>
+            <name>Gazebo/Black</name>
+          </script>
+        </material>
+      </visual>
+      
+      <sensor name="sr04t" type="ray">
+        <always_on>1</always_on>
+        <update_rate>20</update_rate>
+        <visualize>true</visualize>
+        <pose>0 0 0 0 0 0</pose>
+
+        <ray>
+          <scan>
+            <horizontal>
+              <samples>10</samples>
+              <resolution>1</resolution>
+              <min_angle>-0.654</min_angle>
+              <max_angle>0.654</max_angle>
+            </horizontal>
+
+            <vertical>
+              <samples>10</samples>
+              <resolution>1</resolution>
+              <min_angle>-0.654</min_angle>
+              <max_angle>0.654</max_angle>
+            </vertical>
+          </scan>
+
+          <range>
+            <min>0.2</min>
+            <max>6.0</max>
+            <resolution>0.001</resolution>
+          </range>
+        </ray>
+
+        <plugin name="gazebo_ros_range" filename="libgazebo_ros_range.so">
+          <gaussianNoise>0.005</gaussianNoise>
+          <alwaysOn>true</alwaysOn>
+          <updateRate>20</updateRate>
+          <topicName>sensor/sonar_down</topicName>
+          <frameName>sonar_down</frameName>
+          <radiation>ULTRASOUND</radiation>
+          <fov>1.309</fov>
+        </plugin>
+      </sensor>
+    </link>
+  </model>
+</sdf>

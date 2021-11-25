@@ -1,0 +1,4 @@
+# --- Flag Params ---
+
+show_dbg_msg: true # set log verbosity level to debug
+show_vid_stream: false # show video stream from image processing server

@@ -1,0 +1,184 @@
+<!-- Launch file to test whole functionality -->
+
+<launch>
+
+  <!-- Arguments for video_stream_opencv -->
+  <!-- See also: http://wiki.ros.org/video_stream_opencv -->
+  <arg name="vid_ns" 		default="camera"		/>
+  <arg name="vid_url" 		default="0"				/>
+  <arg name="vid_fps" 		default="30"			/>
+  <arg name="queue_size"	default="1"				/>
+  <arg name="stream_fps"	default="30"			/>
+  <arg name="vid_frame_id"  default="mapping_cam"   />
+  <arg name="vid_info_url"	default=""				/>
+  <arg name="flip_vid_horz"	default="false"			/>
+  <arg name="flip_vid_vert"	default="false"			/>
+  <arg name="vid_width"		default="0"				/>
+  <arg name="vid_height"	default="0"				/>
+  <arg name="show_stream"	default="true"			/>
+
+  <!-- Image processing server arguments -->
+  <arg name="img_proc_ns"   default="image_processing"/>
+
+  <!-- Mission control arguments -->
+  <arg name="miss_ctrl_ns" 	default="mission_control"/>
+
+  <!-- MAVROS arguments -->
+  <arg name="mavros_ns" default="ezio"/>
+  <arg name="fcu_url" default="udp://127.0.0.1:14551@14555" />
+  <arg name="gcs_url" default="udp://@localhost" />
+  <arg name="tgt_system" default="1" />
+  <arg name="tgt_component" default="1" />
+  <arg name="log_output" default="screen" />
+  <arg name="fcu_protocol" default="v2.0" />
+  <arg name="respawn_mavros" default="false" />
+
+  <!-- GPIO arguments -->
+  <arg name="gpio_ns" default="gpio"/>
+
+  <!-- General parameters -->
+  <rosparam file="$(find mission_control)/config/general_params.yaml"/>
+
+  <!-- General parameters -->
+  <param name="vid_ns" value="$(arg vid_ns)"/>
+
+  <!-- Parameters for GPIO -->
+  <param name="gpio_ns" value="$(arg gpio_ns)"/>
+
+  <!-- Parameters for image processing -->
+  <param name="img_proc_ns" value="$(arg img_proc_ns)"/>
+
+  <!-- Parameters for mission control -->
+  <param name="miss_ctrl_ns" value="$(arg miss_ctrl_ns)"/>
+  <param name="keyboard_ns" value="$(arg miss_ctrl_ns)"/>
+
+  <!-- Parameters for MAVROS -->
+  <param name="mavros_ns" value="$(arg mavros_ns)"/>
+
+  <!-- MAVROS node -->
+  <group ns="$(arg mavros_ns)">
+
+    <include file="$(find mavros)/launch/node.launch">
+      <arg name="pluginlists_yaml" value="$(find uav_control)/config/apm_pluginlists.yaml" />
+      <arg name="config_yaml" value="$(find uav_control)/config/apm_config.yaml" />
+
+      <arg name="fcu_url" value="$(arg fcu_url)" />
+      <arg name="gcs_url" value="$(arg gcs_url)" />
+      <arg name="tgt_system" value="$(arg tgt_system)" />
+      <arg name="tgt_component" value="$(arg tgt_component)" />
+      <arg name="log_output" value="$(arg log_output)" />
+      <arg name="fcu_protocol" value="$(arg fcu_protocol)" />
+      <arg name="respawn_mavros" default="$(arg respawn_mavros)" />
+    </include>
+
+  </group>
+
+  <!-- Launch video stream -->
+  <include file="$(find video_stream_opencv)/launch/camera.launch" >
+
+    <!-- node name and ros graph name -->
+    <arg name="camera_name" value="$(arg vid_ns)" />
+    <!-- means video device 0, /dev/video0 -->
+    <arg name="video_stream_provider" value="$(arg vid_url)" />
+    <!-- set camera fps to (if the device allows) -->
+    <arg name="set_camera_fps" value="$(arg vid_fps)"/>
+    <!-- set buffer queue size of frame capturing to (1 means we want the latest frame only) -->
+    <arg name="buffer_queue_size" value="$(arg queue_size)" />
+    <!-- throttling the querying of frames to -->
+    <arg name="fps" value="$(arg stream_fps)" />
+    <!-- setting frame_id -->
+    <arg name="frame_id" value="$(arg vid_frame_id)" />
+    <!-- camera info loading, take care as it needs the "file:///" at the start , e.g.:
+    "file:///$(find your_camera_package)/config/your_camera.yaml" -->
+    <arg name="camera_info_url" value="$(arg vid_info_url)" />
+    <!-- flip the image horizontally (mirror it) -->
+    <arg name="flip_horizontal" value="$(arg flip_vid_horz)" />
+    <!-- flip the image vertically -->
+    <arg name="flip_vertical" value="$(arg flip_vid_vert)" />
+    <!-- force width and height, 0 means no forcing -->
+    <arg name="width" value="$(arg vid_width)"/>
+    <arg name="height" value="$(arg vid_height)"/>
+    <!-- visualize on an image_view window the stream generated -->
+    <arg name="visualize" value="$(arg show_stream)" />
+
+  </include>
+
+  <!-- GPIO node -->
+  <group ns="$(arg gpio_ns)">
+
+    <!-- Load pinout configuration -->
+    <rosparam file="$(find gpio)/config/pinout.yaml"/>
+
+    <!-- Launch geography position server -->
+    <node pkg="gpio" 
+          type="gpio_node"
+          name="gpio_server"
+          respawn="false"
+          output="screen"
+          launch-prefix="xterm -e gdb -ex run --args">
+      
+    </node>
+
+  </group>
+
+  <!-- Mission control nodes -->
+  <group ns="$(arg miss_ctrl_ns)">
+
+    <!-- Launch keyboard node -->
+    <node pkg="keyboard" 
+          type="keyboard"
+          name="keyboard"
+          respawn="true"
+          output="screen"
+          launch-prefix="xterm -e gdb -ex run --args">
+
+    </node>
+
+    <!-- Launch mission functions server -->
+    <node pkg="mission_control" 
+          type="miss_server_node"
+          name="mission_server"
+          respawn="true"
+          output="screen"
+          launch-prefix="xterm -e gdb -ex run --args">
+      
+    </node>
+
+    <!-- Launch mission functions client -->
+    <node pkg="mission_control" 
+          type="miss_client_node"
+          name="mission_client"
+          respawn="false"
+          output="screen"
+          launch-prefix="xterm -e gdb -ex run --args">
+      
+    </node>
+
+  </group>
+
+  <!-- Image processing nodes -->
+  <group ns="$(arg img_proc_ns)">
+
+    <!-- Launch image proecssing functions server -->
+    <node pkg="image_processor" 
+          type="img_proc_node"
+          name="img_proc_server"
+          respawn="false"
+          output="screen"
+          launch-prefix="xterm -e gdb -ex run --args">
+      
+    </node>
+
+    <!-- Launch geography position server -->
+    <node pkg="image_processor" 
+          type="geo_pos_node"
+          name="geo_pos_server"
+          respawn="false"
+          output="screen"
+          launch-prefix="xterm -e gdb -ex run --args">
+      
+    </node>
+
+  </group>
+
+</launch>

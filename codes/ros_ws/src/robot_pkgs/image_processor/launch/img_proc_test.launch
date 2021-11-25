@@ -1,0 +1,36 @@
+<!-- .launch file for mission functions client -->
+
+<launch>
+
+  <!-- Arguments for video_stream_opencv -->
+  <!-- See also: http://wiki.ros.org/video_stream_opencv -->
+  <arg name="vid_ns" 		default="camera"		/>
+
+  <!-- Image processing server arguments -->
+  <arg name="img_proc_ns"   default="image_processing"/>
+
+  <!-- General parameters -->
+  <rosparam file="$(find mission_control)/config/general_params.yaml"/>
+
+  <!-- Parameters for video stream -->
+  <param name="vid_ns" value="$(arg vid_ns)"/>
+
+  <!-- Parameters for image processing -->
+  <param name="img_proc_ns" value="$(arg img_proc_ns)"/>
+
+  <!-- Image processing nodes -->
+  <group ns="$(arg img_proc_ns)">
+
+    <!-- Launch image proecssing functions server -->
+    <node pkg="image_processor" 
+          type="img_proc_node"
+          name="img_proc_server"
+          respawn="false"
+          output="screen"
+          launch-prefix="gdb -ex run --args">
+      
+    </node>
+
+  </group>
+
+</launch>

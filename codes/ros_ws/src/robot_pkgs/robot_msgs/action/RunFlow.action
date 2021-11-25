@@ -1,0 +1,10 @@
+# Will determine which flow to run
+string flow_name
+---
+# Info about mission flow success or failure cause
+string flow_report
+---
+# Info about mission flow running process
+string flow_info
+# Sequence number of mission function that is being run
+uint64 seq_id

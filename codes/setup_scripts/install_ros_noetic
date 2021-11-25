@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# Set up sources.list
+sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu \
+    $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+
+# Set up keys
+curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add -
+
+# Install ROS
+sudo apt update
+sudo apt install ros-noetic-desktop-full -y
+
+# Install dependencies for building
+sudo apt install python3-rosdep python3-rosinstall \
+    python3-rosinstall-generator python3-wstool build-essential -y
+    
+# Catkin tools needs. ref: https://stackoverflow.com/a/66142177
+sudo apt install python3-catkin-tools python3-osrf-pycommon
+
+# Initialize rosdep
+sudo apt install python3-rosdep -y
+sudo rosdep init
+rosdep update
+
+# Fix for libroscpp.so not found
+# Currently, something invokes setcap on python
+# Hence, LD_LIBRARY_PATH is ignored
+sudo setcap -r /usr/bin/python3.8
+
+echo "Remember to add source /opt/ros/noetic/setup.bash in ~/.bashrc"

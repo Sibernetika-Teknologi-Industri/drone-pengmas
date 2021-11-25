@@ -1,0 +1,22 @@
+<!-- Launch file for launching keyboard node -->
+<launch>
+
+  <!-- Keyboard arguments -->
+  <arg name="keyboard_ns" 	default="mission_control"/>
+
+  <!-- Mission control nodes -->
+  <group ns="$(arg keyboard_ns)">
+
+    <!-- Launch keyboard node -->
+    <node pkg="keyboard" 
+          type="keyboard"
+          name="keyboard"
+          respawn="true"
+          output="screen"
+          launch-prefix="gdb -ex run --args">
+
+    </node>
+
+  </group>
+
+</launch>

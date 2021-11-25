@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+
+<launch>
+
+  <!-- Arguments for video_stream_opencv -->
+  <!-- See also: http://wiki.ros.org/video_stream_opencv -->
+  <arg name="vid_ns" 		default="camera"		/>
+  <arg name="vid_url" 		default="0"				/>
+  <arg name="vid_fps" 		default="30"			/>
+  <arg name="queue_size"	default="1"				/>
+  <arg name="stream_fps"	default="30"			/>
+  <arg name="vid_frame_id"  default="mapping_cam"   />
+  <arg name="vid_info_url"	default=""				/>
+  <arg name="flip_vid_horz"	default="false"			/>
+  <arg name="flip_vid_vert"	default="false"			/>
+  <arg name="vid_width"		default="0"				/>
+  <arg name="vid_height"	default="0"				/>
+  <arg name="show_stream"	default="false"			/>
+
+  <!-- Launch video stream -->
+  <include file="$(find video_stream_opencv)/launch/camera.launch" >
+
+    <!-- node name and ros graph name -->
+    <arg name="camera_name" value="$(arg vid_ns)" />
+    <!-- means video device 0, /dev/video0 -->
+    <arg name="video_stream_provider" value="$(arg vid_url)" />
+    <!-- set camera fps to (if the device allows) -->
+    <arg name="set_camera_fps" value="$(arg vid_fps)"/>
+    <!-- set buffer queue size of frame capturing to (1 means we want the latest frame only) -->
+    <arg name="buffer_queue_size" value="$(arg queue_size)" />
+    <!-- throttling the querying of frames to -->
+    <arg name="fps" value="$(arg stream_fps)" />
+    <!-- setting frame_id -->
+    <arg name="frame_id" value="$(arg vid_frame_id)" />
+    <!-- camera info loading, take care as it needs the "file:///" at the start , e.g.:
+    "file:///$(find your_camera_package)/config/your_camera.yaml" -->
+    <arg name="camera_info_url" value="$(arg vid_info_url)" />
+    <!-- flip the image horizontally (mirror it) -->
+    <arg name="flip_horizontal" value="$(arg flip_vid_horz)" />
+    <!-- flip the image vertically -->
+    <arg name="flip_vertical" value="$(arg flip_vid_vert)" />
+    <!-- force width and height, 0 means no forcing -->
+    <arg name="width" value="$(arg vid_width)"/>
+    <arg name="height" value="$(arg vid_height)"/>
+    <!-- visualize on an image_view window the stream generated -->
+    <arg name="visualize" value="$(arg show_stream)" />
+
+  </include>
+
+</launch>

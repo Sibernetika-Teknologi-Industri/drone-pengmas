@@ -1,0 +1,26 @@
+<!-- .launch file for mission functions client -->
+
+<launch>
+
+  <!-- Mission control arguments -->
+  <arg name="miss_ctrl_ns" 	default="mission_control"/>
+
+  <!-- General parameters -->
+  <rosparam file="$(find mission_control)/config/general_params.yaml"/>
+
+  <!-- Mission control nodes -->
+  <group ns="$(arg miss_ctrl_ns)">
+
+    <!-- Launch mission functions client -->
+    <node pkg="mission_control" 
+          type="miss_client_node"
+          name="mission_client"
+          respawn="false"
+          output="screen"
+          launch-prefix="gdb -ex run --args">
+      
+    </node>
+
+  </group>
+
+</launch>

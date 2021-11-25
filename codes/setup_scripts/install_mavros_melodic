@@ -1,0 +1,4 @@
+#!/bin/bash
+
+sudo apt install ros-melodic-mavros ros-melodic-mavros-extras -y
+sudo bash ./install_geographiclib_datasets.sh   

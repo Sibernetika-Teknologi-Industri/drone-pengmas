@@ -1,0 +1,62 @@
+<!-- .launch file for mission functions server -->
+
+<launch>
+
+  <!-- GPIO server arguments -->
+  <arg name="gpio_ns"   default="gpio"/>
+
+  <!-- Arguments for video_stream_opencv -->
+  <!-- See also: http://wiki.ros.org/video_stream_opencv -->
+  <arg name="vid_ns" 		default="camera"		/>
+  <arg name="vid_url" 		default="0"				/>
+  <arg name="vid_fps" 		default="30"			/>
+  <arg name="queue_size"	default="1"				/>
+  <arg name="stream_fps"	default="30"			/>
+  <arg name="vid_frame_id"  default="mapping_cam"   />
+  <arg name="vid_info_url"	default=""				/>
+  <arg name="flip_vid_horz"	default="false"			/>
+  <arg name="flip_vid_vert"	default="false"			/>
+  <arg name="vid_width"		default="0"				/>
+  <arg name="vid_height"	default="0"				/>
+  <arg name="show_stream"	default="true"			/>
+
+  <!-- Image processing server arguments -->
+  <arg name="img_proc_ns"   default="image_processing"/>
+
+  <!-- Mission control arguments -->
+  <arg name="miss_ctrl_ns" 	default="mission_control"/>
+
+  <!-- MAVROS arguments -->
+  <arg name="mavros_ns" default="ezio"/>
+
+  <!-- General parameters -->
+  <rosparam file="$(find mission_control)/config/general_params.yaml"/>
+
+  <!-- Parameters for GPIO -->
+  <param name="gpio_ns" value="$(arg gpio_ns)"/>
+  
+  <!-- Parameters for image processing -->
+  <param name="img_proc_ns" value="$(arg img_proc_ns)"/>
+
+  <!-- Parameters for mission control -->
+  <param name="keyboard_ns" value="$(arg miss_ctrl_ns)"/>
+
+  <!-- Parameters for MAVROS -->
+  <param name="mavros_ns" value="$(arg mavros_ns)"/>
+
+  <!-- Mission control nodes -->
+  <group ns="$(arg miss_ctrl_ns)">
+
+    <!-- Launch mission functions server -->
+    <node pkg="mission_control" 
+          type="miss_server_node"
+          name="mission_server"
+          respawn="true"
+          output="screen"
+          launch-prefix="gdb -ex run --args">
+      
+    </node>
+
+  </group>
+
+</launch>

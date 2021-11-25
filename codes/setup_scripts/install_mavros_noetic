@@ -1,0 +1,12 @@
+#!/bin/bash
+
+sudo apt install ros-noetic-mavros ros-noetic-mavros-extras -y
+sudo bash ./install_geographiclib_datasets.sh   
+
+sudo apt install python3-dev python3-opencv python3-wxgtk4.0 python3-pip python3-matplotlib \
+	python3-lxml python3-pygame -y
+pip3 install PyYAML mavproxy --user
+sudo usermod -a -G dialout $USER
+
+echo 'Remember to add "export PATH=$PATH:$HOME/.local/bin" in ~/.bashrc'
+echo 'Also remember to reboot the system'

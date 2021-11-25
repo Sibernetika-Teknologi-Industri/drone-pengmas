@@ -1,0 +1,11 @@
+# Will determine which function to run
+# See MissionMissionMap.msg for more info
+uint64 func_id
+# Mission function parameters
+MissionParams params
+---
+# Info about mission success or failure cause
+string report
+---
+# Info about mission running process
+string info

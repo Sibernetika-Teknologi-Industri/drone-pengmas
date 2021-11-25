@@ -1,0 +1,10 @@
+# Will determine which geographic function to run
+# See GPIOMap.msg for more info
+uint8 func_id
+# Mission function parameters
+Params params
+---
+# True if function execution is successful, and otherwise
+bool success
+# Info about execution success or failure cause
+string report

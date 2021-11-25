@@ -1,0 +1,4 @@
+# Configuration file for missions function
+
+# ROS bagging
+enable_bagging: true

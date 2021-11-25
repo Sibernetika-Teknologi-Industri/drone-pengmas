@@ -1,0 +1,47 @@
+#!/bin/bash
+
+# Reference link: 
+# - https://answers.ros.org/question/363889/intel-realsens-on-ubuntu-2004-ros-noetic-installation-desription/
+# - https://github.com/IntelRealSense/librealsense/blob/development/doc/installation.md
+
+sudo apt-get install -y libdrm-amdgpu1 libdrm-dev libdrm-freedreno1 \
+    libdrm-nouveau2 libdrm-radeon1 libdrm-tegra0 libdrm2
+
+sudo apt-get install -y glusterfs-common \
+    libglu1-mesa libglui-dev libglui2c2
+
+sudo apt-get install -y libglu1-mesa mesa-utils mesa-utils-extra \
+    xorg-dev libgtk-3-dev libusb-1.0-0-dev
+    
+sudo apt install sudo -y git libssl-dev libusb-1.0-0-dev \
+    pkg-config libgtk-3-dev
+    
+sudo apt install libglfw3-dev libgl1-mesa-dev libglu1-mesa-dev -y
+
+sudo apt install python-opengl python3-opengl libopencv-dev python3-opencv -y
+sudo apt install qt5-default cmake-qt-gui libssl-dev -y
+
+sudo apt install ccache libevent-pthreads-2.1-7 libpthread-stubs0-dev -y
+
+git clone git@github.com:IntelRealSense/librealsense.git
+cd librealsense
+git checkout v2.48.0
+
+./scripts/setup_udev_rules.sh
+sudo udevadm control --reload-rules && udevadm trigger
+
+mkdir build
+cd build
+
+echo 'Continuing the installation using cmake-gui, as it is easier to control installation with that'
+cmake-gui .
+make -j$(nproc) -l 4.0
+sudo make install
+#echo 'After installing, add the installation lib path to /etc/ld.so.cond.d/realsense.conf'
+#echo ', and then run sudo ldconfig'
+
+sudo sh -c "echo /usr/local/lib > /etc/ld.so.conf.d/realsense.conf"
+sudo ldconfig
+
+echo "Remember to add export REALSENSE2_DIR=/usr/local/lib/cmake/realsense2 in ~/.bashrc"
+#echo "export REALSENSE2_DIR=/usr/local/lib/cmake/realsense2" >> ~/.bashrc

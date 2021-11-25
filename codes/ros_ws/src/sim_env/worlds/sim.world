@@ -1,0 +1,59 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+  <world name="default">
+    <physics type="ode">
+      <ode>
+        <solver>
+          <type>quick</type>
+          <iters>100</iters>
+          <sor>1.0</sor>
+        </solver>
+        <constraints>
+          <cfm>0.0</cfm>
+          <erp>0.9</erp>
+          <contact_max_correcting_vel>0.1</contact_max_correcting_vel>
+          <contact_surface_layer>0.0</contact_surface_layer>
+        </constraints>
+      </ode>
+      <real_time_update_rate>-1</real_time_update_rate>
+      <!-- <max_step_size>0.0020</max_step_size> -->
+    </physics>
+
+    <!-- Light Source -->
+    <model name="aws_robomaker_warehouse_Lamp_01_005">
+      <include>
+        <uri>model://aws_robomaker_warehouse_Lamp_01</uri>
+      </include>
+      <pose frame="">0 0 4 0 0 0</pose>
+	  </model>
+    <light name="Warehouse_CeilingLight_003" type="point">
+      <pose frame="">0 0 4 0 0 0</pose>
+      <diffuse>0.5 0.5 0.5 1</diffuse>
+      <specular>0.2 0.2 0.2 1</specular>
+      <attenuation>
+        <range>80</range>
+        <constant>0.3</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <cast_shadows>1</cast_shadows>
+      <direction>0.1 0.1 -1</direction>
+    </light>
+
+    <!-- Ground Plane -->
+    <model name="aws_robomaker_warehouse_GroundB_01_001">
+      <include>
+        <uri>model://aws_robomaker_warehouse_GroundB_01</uri>
+      </include>
+      <pose frame="">0.0 0.0 0.0 0 0 0</pose>
+	  </model>
+
+    <!-- Drone -->
+    <model name="drone">
+      <include>
+        <uri>model://warehouse_drone</uri>
+      </include>
+    </model>
+
+  </world>
+</sdf>

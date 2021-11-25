@@ -1,0 +1,5 @@
+# --- GPIO Pinout Configuration ---
+
+# Pin for receiving camera trigger command from FCU
+cam_trig_pin: 4
+cam_feed_pin: 5
